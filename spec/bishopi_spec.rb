@@ -5,13 +5,14 @@ module Bishopi
 
   describe Crawler do
     before do
+      @indexer = double('indexer').as_null_object
       @output = double('output').as_null_object
+      @spider = Crawler.new(@indexer, SAMPLE_URL_FILE, @output)
     end
 
     describe "#initialize" do
       it "creates a worklist from a seed file" do
-        spider = Crawler.new(SAMPLE_URL_FILE, @output)
-        spider.worklist.should_not be_nil
+        @spider.worklist.should_not be_nil
       end
     end
 
@@ -20,8 +21,7 @@ module Bishopi
         @output.should_receive(:puts).
           with('Bishopi starting to crawl...')
 
-        spider = Crawler.new(SAMPLE_URL_FILE, @output)
-        spider.start
+        @spider.start
       end
 
       it "stops when all URLs in worklist have been crawled"
@@ -32,12 +32,23 @@ module Bishopi
         @output.should_receive(:puts).
           with("Processing 'http://bobnadler.com'")
 
-        spider = Crawler.new(SAMPLE_URL_FILE, @output)
-        spider.start
+        @spider.start
       end
 
-      it "retrieves a list of links on the page"
-      it "indexes the page if it doesn't exist"
+      it "removes a url form the worklist when it is indexed" do
+        @spider.start
+        @spider.worklist.should_not include('http://bobnadler.com')
+      end
+
+      it "adds a url found on the page to the worklist"
+
+      it "passes the page to the indexer for indexing" do
+        @indexer.should_receive(:index).
+          with('http://bobnadler.com')
+
+        @spider.start
+      end
+
       it "does not index the page if robots are not allowed"
     end
   end

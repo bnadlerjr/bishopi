@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency('robots', '>= 0.10.0')
+  s.add_dependency('nokogiri')
 
   s.add_development_dependency('rspec', '>= 2.4.0')
 end

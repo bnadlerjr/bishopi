@@ -13,7 +13,7 @@ module Bishopi
     def start
       @output.puts "Bishopi starting to crawl..."
       until @worklist.empty?
-        url = @worklist.pop
+        url = @worklist.shift
         @output.puts "Processing '#{url}'"
         @indexer.index(url)
       end

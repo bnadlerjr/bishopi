@@ -1,1 +1,1 @@
-http://bobnadler.com
+/Users/bob/Dev/bishopi/spec/fixtures/index.html

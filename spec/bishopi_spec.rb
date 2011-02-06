@@ -2,6 +2,7 @@ require "#{File.dirname(__FILE__)}/../lib/bishopi"
 
 module Bishopi
   SAMPLE_URL_FILE = "#{File.dirname(__FILE__)}/sample-url-file.txt"
+  FIXTURES_PATH   = "#{File.dirname(__FILE__)}/fixtures"
 
   describe Crawler do
     before do
@@ -30,21 +31,29 @@ module Bishopi
     describe "#process" do
       it "shows the URL being processed" do
         @output.should_receive(:puts).
-          with("Processing 'http://bobnadler.com'")
+          with("Processing '#{FIXTURES_PATH}/index.html'")
 
         @spider.start
       end
 
       it "removes a url form the worklist when it is indexed" do
         @spider.start
-        @spider.worklist.should_not include('http://bobnadler.com')
+        @spider.worklist.should_not include("#{FIXTURES_PATH}/index.html")
       end
 
-      it "adds a url found on the page to the worklist"
+      it "adds a url found on the page to the worklist" do
+        @spider.start
+        @spider.worklist.should include('contact.html')
+      end
+
+      it "does not add duplicate urls to the new worklist" do
+        @spider.start
+        @spider.worklist.should == ['contact.html', 'services.html']
+      end
 
       it "passes the page to the indexer for indexing" do
         @indexer.should_receive(:index).
-          with('http://bobnadler.com')
+          with("#{FIXTURES_PATH}/index.html")
 
         @spider.start
       end
